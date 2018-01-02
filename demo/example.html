@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Пример подмены номера телефона при переходе с рекламы</title>
+    <style>
+        .block {
+            padding-top: 80px;
+            text-align: center;
+            width:600px;
+            margin: auto;
+        }
+        .block span {
+            font-family: arial;
+            color: #666;
+        }
+        .block b {
+            color: #111;
+        }
+    </style>
+</head>
+<body>
+    <div class="block">
+        <h1 class="ya-phone">8 (812) 123-45-67</h1>
+        <hr>
+        <span>Номер 8 (812) 123-45-67 виден всем обычным пользователям, пришедшим не по рекламе. 
+            Если к url страницы добавить <b>?utm_medium=cpc</b>, то номер телефона подменится на (812) 777 77 77. 
+            Информация об источнике трафика сохраняется в cookie на 15 дней, поэтому, при последующем заходе на страницу, номер телефона также подменится.
+        </span>
+    </div>
+
+    <!-- ABV AdTracking -->
+    <script type="text/javascript">
+        (function (d, w, p, s, k, v, e) {
+        
+            var urlVar = w.location.search,
+                urlAssoc = urlVar.substr(1).split("&"),
+                index = urlAssoc.indexOf( k + "=" + v ),
+                r = function(){
+                    this.innerHTML = p;
+                },
+                f = function(){
+                    var phones = d.querySelectorAll(s),
+                        i = 0;
+                    for( ; i < phones.length; i++ ){
+                        r.call( phones[i] );
+                    }				
+                },
+                get = function( name ){
+                    var matches = d.cookie.match(new RegExp(
+                        "(?:^|; )" + name + "=([^;]*)"
+                    ));
+                    return matches ? decodeURIComponent(matches[1]) : undefined;
+                },
+                set = function(){
+                    var date = new Date(new Date().getTime() + 1296000000);
+                    d.cookie = "_ABV_AdTracking=ad; path=/; expires=" + date.toUTCString();
+                };
+                
+            if ( (index != -1 || get("_ABV_AdTracking")) && e == "enable" ){
+                f();
+                w.addEventListener( "DOMContentLoaded", f, false );
+                set();
+            }	
+        
+        })(document, window, "(812) 777 77 77", ".ya-phone", "utm_medium", "cpc", "enable");
+    </script>
+    <!-- /ABV AdTracking -->
+
+</body>
+</html>
